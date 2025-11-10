@@ -1,0 +1,37 @@
+annotated-types==0.7.0
+anyio==4.8.0
+asyncio==3.4.3
+certifi==2023.5.7
+distro==1.9.0
+exceptiongroup==1.2.2
+h11==0.14.0
+httpcore==1.0.6
+httpx==0.27.2
+idna==3.4
+jiter==0.7.0
+nest-asyncio==1.5.6
+numpy==1.23.5
+openai==1.59.8
+pandas==1.5.1
+pydantic==2.9.2
+pydantic_core==2.23.4
+python-dateutil==2.8.2
+pytz==2022.5
+six==1.16.0
+sniffio==1.3.0
+tenacity==9.0.0
+typing_extensions==4.12.2
+ipykernel
+
+# LoRA Fine-tuning dependencies (requires Linux/Windows with CUDA GPU)
+# For macOS users: Use Google Colab or create a Colab notebook
+unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git
+xformers
+trl>=0.7.0
+accelerate
+bitsandbytes
+datasets
+
+# For installation on Linux/Windows with CUDA:
+# pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
+# pip install xformers trl accelerate bitsandbytes datasets
