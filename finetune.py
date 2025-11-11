@@ -42,7 +42,7 @@ def main():
                        help='Output directory for checkpoints')
     parser.add_argument('--max_seq_length', type=int, default=2048,
                        help='Maximum sequence length')
-    parser.add_argument('--batch_size', type=int, default=2,
+    parser.add_argument('--batch_size', type=int, default=16,
                        help='Per device train batch size')
     parser.add_argument('--gradient_accumulation_steps', type=int, default=4,
                        help='Gradient accumulation steps')
@@ -148,7 +148,7 @@ def main():
     
     # Save merged model (optional but recommended)
     print(f"Saving merged model...")
-    model.save_pretrained_merged(f"{final_model_name}_merged", tokenizer, save_method="merged_16bit")
+    model.save_pretrained_merged(f"{final_model_name}_merged", tokenizer, save_method="merged")
     
     print(f"\n✓ Training complete!")
     print(f"  - LoRA adapters saved to: {final_model_name}/")
