@@ -1,0 +1,13 @@
+{
+  "model": "Llama-3.2-1B-Instruct_ft_16_32_merged",
+  "model_path": "models/Llama-3.2-1B-Instruct_ft_16_32_merged",
+  "correlation": 0.10314611036332165,
+  "p_value": 0.02106596018745441,
+  "mae": 60.48730780196569,
+  "rmse": 68.62512622408117,
+  "agreement_rate": 0.5084,
+  "n_scenarios": 100,
+  "n_examples_per_scenario": 50,
+  "n_total_decisions": 5000,
+  "inference_seed": 7
+}

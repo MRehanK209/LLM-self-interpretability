@@ -1,0 +1,13 @@
+{
+  "model": "gemma-3-1b-it_ft_16_32_merged",
+  "model_path": "/cephfs/users/bashir/LLM-self-interpretability/models/gemma-3-1b-it_ft_16_32_merged",
+  "correlation": -0.0028213512575941766,
+  "p_value": 0.9498225982618291,
+  "mae": 60.52799473973781,
+  "rmse": 68.67354030781682,
+  "agreement_rate": 0.5074,
+  "n_scenarios": 100,
+  "n_examples_per_scenario": 50,
+  "n_total_decisions": 5000,
+  "inference_seed": 7
+}
