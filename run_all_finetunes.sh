@@ -12,28 +12,28 @@ echo "================================================"
 
 # Fine-tune Llama 3.2 1B Instruct
 echo -e "\n[1/4] Fine-tuning Llama 3.2 1B Instruct..."
-python finetune.py \
+python pref_instillation_finetuning.py \
     --model meta-llama/Llama-3.2-1B-Instruct \
     --lora_r ${LORA_R} \
     --lora_alpha ${LORA_ALPHA} 
 
 # Fine-tune Llama 3.2 3B Instruct
 echo -e "\n[2/4] Fine-tuning Llama 3.2 3B Instruct..."
-python finetune.py \
+python pref_instillation_finetuning.py \
     --model meta-llama/Llama-3.2-3B-Instruct \
     --lora_r ${LORA_R} \
     --lora_alpha ${LORA_ALPHA} 
 
 # Fine-tune Gemma-3 1B IT
 echo -e "\n[3/4] Fine-tuning Gemma-3 1B IT..."
-python finetune.py \
+python pref_instillation_finetuning.py \
     --model google/gemma-3-1b-it \
     --lora_r ${LORA_R} \
     --lora_alpha ${LORA_ALPHA} 
 
 # Fine-tune Gemma-3 4B IT
 echo -e "\n[4/4] Fine-tuning Gemma-3 4B IT..."
-python finetune.py \
+python pref_instillation_finetuning.py \
     --model google/gemma-3-4b-it \
     --lora_r ${LORA_R} \
     --lora_alpha ${LORA_ALPHA} 

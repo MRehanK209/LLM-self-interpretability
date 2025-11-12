@@ -1,37 +1,92 @@
-annotated-types==0.7.0
-anyio==4.8.0
-asyncio==3.4.3
-certifi==2023.5.7
-distro==1.9.0
-exceptiongroup==1.2.2
-h11==0.14.0
-httpcore==1.0.6
-httpx==0.27.2
-idna==3.4
-jiter==0.7.0
-nest-asyncio==1.5.6
-numpy==1.23.5
-openai==1.59.8
-pandas==1.5.1
-pydantic==2.9.2
-pydantic_core==2.23.4
-python-dateutil==2.8.2
-pytz==2022.5
-six==1.16.0
-sniffio==1.3.0
-tenacity==9.0.0
-typing_extensions==4.12.2
+# =========================
+# Base environment
+# =========================
+annotated-types>=0.7.0
+anyio>=4.8.0
+certifi>=2023.5.7
+distro>=1.9.0
+h11>=0.14.0
+httpcore>=1.0.6
+httpx>=0.27.2
+nest-asyncio>=1.5.6
+openai>=1.59.8
+pydantic>=2.9.0
+python-dateutil>=2.8.2
+tenacity>=9.0.0
+typing_extensions>=4.12.2
 ipykernel
+tqdm
 
-# LoRA Fine-tuning dependencies (requires Linux/Windows with CUDA GPU)
-# For macOS users: Use Google Colab or create a Colab notebook
-unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git
-xformers
-trl>=0.7.0
-accelerate
-bitsandbytes
-datasets
+# =========================
+# Deep learning core (PyTorch 2.8.0 for torch.int1 support)
+# =========================
+torch==2.8.0
+torchvision==0.23.0
+torchaudio==2.8.0
 
-# For installation on Linux/Windows with CUDA:
-# pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
-# pip install xformers trl accelerate bitsandbytes datasets
+# =========================
+# Transformers ecosystem (compatible with vllm 0.11.0)
+# =========================
+transformers==4.57.1
+safetensors>=0.4.0
+sentencepiece>=0.2.0
+tokenizers>=0.22.0
+
+# =========================
+# vLLM (V1 engine with multiprocessing fixes)
+# =========================
+vllm==0.11.0
+
+# =========================
+# Fine-tuning / LoRA (OPTIONAL - only needed for training)
+# NOTE: Unsloth is EXCLUDED to avoid version conflicts with vllm
+# For fine-tuning, use a separate environment with unsloth
+# =========================
+# unsloth @ git+https://github.com/unslothai/unsloth.git
+xformers>=0.0.27
+# trl>=0.7.0
+# accelerate>=0.30.0
+# bitsandbytes>=0.43.0
+# datasets>=2.14.0
+
+# =========================
+# Scientific / analysis
+# =========================
+numpy>=2.2.0,<3.0
+pandas>=2.0.0
+scikit-learn>=1.3.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+scipy>=1.10.0
+statsmodels>=0.14.0
+sympy>=1.12
+ipywidgets>=8.0.0
+
+# =========================
+# IMPORTANT NOTES
+# =========================
+# This is an INFERENCE-ONLY environment for running Experiment 1
+# 
+# Key versions (TESTED & WORKING):
+#   - torch 2.8.0 (has torch.int1 for torchao)
+#   - transformers 4.57.1 (has ProcessorMixin for vllm)
+#   - vllm 0.11.0 (V1 engine with multiprocessing support)
+#   - numpy 2.2+ (compatible with torch 2.8.0)
+#
+# For model loading with vLLM, set these environment variables:
+#   os.environ["VLLM_WORKER_MULTIPROC_METHOD"] = "spawn"
+#   os.environ["VLLM_USE_V1"] = "1"
+#   os.environ["VLLM_ALLOW_RUNTIME_LORA_UPDATING"] = "0"
+#
+# Fine-tuned models need config.json:
+#   - Download from base model if missing
+#   - Example: hf_hub_download('meta-llama/Llama-3.2-1B-Instruct', 'config.json')
+#
+# For FINE-TUNING new models:
+#   - Create a separate virtual environment
+#   - Install unsloth with older transformers (~4.40-4.46)
+#   - After training, merge models and switch back to this environment
+#
+# Two-environment workflow:
+#   1. Training env: unsloth + transformers 4.40-4.46
+#   2. Inference env: vllm 0.11.0 + transformers 4.57.1 (THIS FILE)

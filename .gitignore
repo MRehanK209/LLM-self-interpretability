@@ -1,0 +1,34 @@
+# Python environment
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Unsloth cache
+unsloth_compiled_cache/
+
+# Model checkpoints and outputs
+models/
+checkpoints/
+
+# Data caches
+*.cache
+.cache/
+caches/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+

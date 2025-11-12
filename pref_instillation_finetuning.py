@@ -4,6 +4,7 @@ LoRA Fine-tuning Script for Llama 3.2 and Gemma-3 models using Unsloth
 """
 import argparse
 import json
+import os
 import torch
 from datasets import Dataset
 from unsloth import FastLanguageModel
@@ -38,7 +39,7 @@ def main():
                        help='Training data file')
     parser.add_argument('--val_file', type=str, default='data/instill_100_prefs_val.jsonl',
                        help='Validation data file')
-    parser.add_argument('--output_dir', type=str, default='./checkpoints',
+    parser.add_argument('--output_dir', type=str, default='./models/checkpoints',
                        help='Output directory for checkpoints')
     parser.add_argument('--max_seq_length', type=int, default=2048,
                        help='Maximum sequence length')
@@ -136,9 +137,11 @@ def main():
     print("Starting training...")
     trainer.train()
     
-    # Save final model
+    # Save final model - always save in models folder
+    os.makedirs("models", exist_ok=True)
+    
     model_base_name = args.model.split('/')[-1]
-    final_model_name = f"{model_base_name}_ft_{args.lora_r}_{args.lora_alpha}"
+    final_model_name = f"models/{model_base_name}_ft_{args.lora_r}_{args.lora_alpha}"
     
     print(f"\nSaving fine-tuned model as: {final_model_name}")
     
