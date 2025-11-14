@@ -46,24 +46,49 @@ All models show **low correlation (r < 0.11)** between learned and target weight
 - Models did not successfully internalize target preferences
 - Significantly below paper's success criterion (r > 0.90)
 
-#### Possible Explanations
-1. **Insufficient Training:**
-   - May need more epochs (currently 3)
-   - May need more examples per scenario (currently 50)
-   
-2. **Hyperparameter Tuning:**
-   - LoRA rank/alpha may need adjustment
-   - Learning rate optimization needed
-   
-3. **Model Architecture:**
-   - Some models may be more suitable than others
-   - Larger models don't necessarily perform better
-   
-4. **Data Quality:**
-   - Verify training loss convergence
-   - Check if validation loss decreased
+## Deep Dive: Llama-3.2-1B-Instruct Analysis
 
-### Next Steps
+**Focus Model Selected:** Llama-3.2-1B-Instruct (chosen for detailed hyperparameter investigation due to computational efficiency and fastest iteration time)
+
+### Distribution of Model Selections Across Configurations
+
+We conducted systematic hyperparameter experiments to understand why preference instillation failed:
+
+| Configuration | LoRA r/α | Learning Rate | Dropout | Epochs | A Choices | B Choices | % B | Status |
+|--------------|----------|---------------|---------|--------|-----------|-----------|-----|--------|
+| **Base Model (No Training)** | N/A | N/A | N/A | N/A | 5,000 | 0 | 0.0% | Complete baseline |
+| **Initial LoRA** | 16/32 | 2e-4 | 0 | 3 | 4,578 | 422 | 8.44% | Under-learning |
+| **Extreme finetune LoRA** | 128/256 | 2e-5 | 0.1 | 8 | 4,723 | 277 | 5.54% | **WORSE** - over-regularized |
+
+**Target Distribution:** Approximately 2,500 A / 2,500 B (50/50) with >70% agreement on *correct* choices per scenario
+
+### Critical Finding: Insufficient Choice Variation Prevents Weight Estimation
+
+#### The Core Problem
+
+**Weight estimation via logistic regression requires variation in the dependent variable (choice outcomes).** Our experiments revealed:
+
+1. **Severe Class Imbalance:**
+   - Most scenarios (agents) have 45-50 "A" choices out of 50 trials
+   - Minimal or zero "B" choices per scenario
+   - Example: Scenario 1 might have 48 A's, 2 B's
+
+3. **Statistical Impossibility:**
+   - **Without variation in outcomes, there's no signal to estimate preferences**
+   - Regression attempts to fit: P(choose B) = logit⁻¹(w₁·Δx₁ + ... + w₅·Δx₅)
+   - But if P(choose B) ≈ 0 for all examples, weights are undefined
+   - This is analogous to fitting a line through a single point
+
+
+
+#### Implications
+
+**This creates a circular problem:**
+- Cannot estimate weights without choice variation
+- Cannot validate preference instillation without weight estimates
+- Cannot determine if model learned *wrong* preferences vs. *no* preferences
+
+**The fundamental issue:** The model is defaulting to nearly 100% "A" choices, similar to the untrained base model, indicating that LoRA fine-tuning failed to instill meaningful preference weights despite 5,000 training examples.
 
 ## Repository Structure
 
@@ -92,7 +117,6 @@ All models show **low correlation (r < 0.11)** between learned and target weight
 │
 ├── run_experiment1.py                  # Main experiment script
 ├── pref_instillation_finetuning.py     # LoRA fine-tuning script
-├── run_all_finetunes.sh                # Batch fine-tuning script
 └── Experiment1.ipynb                   # Jupyter notebook version
 ```
 
@@ -190,13 +214,4 @@ LORA_ALPHA = 32          # LoRA alpha
 EPOCHS = 3               # Training epochs
 BATCH_SIZE = 16          # Per-device batch size
 LEARNING_RATE = 2e-4     # Learning rate
-```
-
-### Experiment Parameters
-```python
-# In run_experiment1.py
-N_SCENARIOS = 100        # Number of agents/scenarios
-N_EXAMPLES = 50          # Test examples per scenario
-INFERENCE_SEED = 7       # Random seed for test data
-TEMPERATURE = 0          # Deterministic sampling
 ```
